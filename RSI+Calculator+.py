@@ -5,14 +5,13 @@
 # 
 # Developed by J. Welles Wilder, the Relative Strength Index (RSI) is a momentum oscillator that measures the speed and change of price movements. RSI oscillates between zero and 100. Traditionally, and according to Wilder, RSI is considered overbought when above 70 and oversold when below 30. 
 # 
-# There are 2 common ways of calculating Relative Strength Index. 
+# There are 2 common ways of calculating Relative Strength Index:
 #     1. Using Simple Moving Average (SMA)
 #     2. Using Exponential Moving Average (EMA)
 # 
 # The following python script aims to calculate the RSI for First Solar stock (FSLR) using both methods. 
 #     
 
-# In[427]:
 
 import quandl
 import pandas as pd
@@ -21,14 +20,14 @@ get_ipython().magic(u'matplotlib inline')
 import numpy as np
 
 
-# In[428]:
+
 
 # Define Start and End Dates for RSI calculation 
 start_date = "2016-03-18"
 end_date = "2017-03-18"
 
 
-# In[429]:
+
 
 # Getting Data from Quandl 
 df = quandl.get('WIKI/FSLR', start_date = start_date, end_date = end_date)
@@ -47,8 +46,6 @@ plot = df.plot()
 plot.set_title('Fisrt Solar Stock Price History', fontsize = 18);
 plot.set_ylabel('Price', fontsize= 12);
 
-
-# In[419]:
 
 # Defining the function to calculate moving average based on 
 # the exponential moving average method, explanations are in line 
@@ -84,8 +81,6 @@ def ExponentialMovingAverage(series, lookBack):
     return ema
 
 
-# In[ ]:
-
 # Defining the function to calculate moving average based on 
 # the simple moving average (SMA) method
 
@@ -107,8 +102,6 @@ def SimpleMovingAverage(series, lookBack):
     return sma 
 
 
-# In[420]:
-
 # The default time frame for comparing up periods to down periods is 14, as in 14 trading days.
 
 # Defining look back period 
@@ -126,15 +119,10 @@ gain[gain<0] = 0
 loss[loss>0] = 0
 
 
-
-# In[422]:
-
 # Calculating the Exponential Weighted Moving Average (EWMA)
 ewaGain = np.array(ExponentialMovingAverage(gain, lookBack))
 ewaLoss = np.array(ExponentialMovingAverage(loss.abs(), lookBack))
 
-
-# In[423]:
 
 # Calculating the RS based on EWMA:
 # RS = Average gain of up periods during the specified time frame 
@@ -143,9 +131,6 @@ RS_ema = ewmaGain / ewmaLoss
 
 # Calculating the RSI based on EWMA
 RSI_ema = 100.0 - (100.0 / (1.0 + RS_ewma))
-
-
-# In[424]:
 
 # Calculating the Simple Moving Average 
 
@@ -156,19 +141,12 @@ smaGain = smaGain[lookBack-offset:]
 smaLoss = smaLoss[lookBack-offset:]
 
 
-# In[425]:
-
 # Calculating the RS based on SMA:
 # RS = Average gain of up periods during the specified time frame 
 #      / Average loss of down periods during the specified time frame
 
 RS_sma = smaGain/smaLoss
 RSI_sma = 100.0 - (100.0 / (1.0 + RS_sma))
-
-
-
-
-# In[426]:
 
 # Plotting both RSIs 
 
@@ -178,19 +156,4 @@ plt.title('RSI for First Solar Stock');
 plt.ylabel('RSI Normalized');
 plt.xlabel('Trading days since start the date');
 plt.legend(loc = 'best');
-
-
-# In[ ]:
-
-
-
-
-# In[ ]:
-
-
-
-
-# In[ ]:
-
-
 
